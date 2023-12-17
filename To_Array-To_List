@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define N 50
+typedef struct node {
+    int id;
+    struct node* next;
+} node;
+node* create_node() {
+    node* node1 = (node*)malloc(sizeof(node));
+    if (node1!=NULL) {
+        node1->next=NULL;
+    }
+    return node1;
+}
+
+node* toList(int T[], int n) {
+    node* Head=create_node();
+    if (Head==NULL) {
+        return NULL;
+    }
+    node* current=Head;
+    for (int i=0;i<n;i++) {
+        node* noden = create_node();
+        if (noden==NULL) {
+            return NULL;
+        }
+        noden->id=T[i];
+        current->next=noden;
+        current=current->next;
+    }
+    current = Head;
+    for(int i=0;i<n;i++){
+        printf("%d ",T[i]);
+    }
+    printf("\n");
+    return Head;
+}
+int* toArray(node* head, int* count) {
+    if (head==NULL) {
+        *count=0;
+        return NULL;
+    }
+    node* current=head;
+    *count=0;
+    while (current!=NULL) {
+        (*count)++;
+        current=current->next;
+    }
+    int* T=(int*)malloc(sizeof(int)*(*count));
+    if (T==NULL) {
+        *count=0;
+        return NULL;
+    }
+    current=head;
+    for (int i=0;i<*count;i++) {
+        T[i]=current->id;
+        current=current->next;
+    }
+    return T;
+}
+void freeList(node* head) {
+    node* current=head;
+    while (current!=NULL) {
+        node* temp=current;
+        current=current->next;
+        free(temp);
+    }
+}
+int main() {
+    int choice;
+    node* linkedList = NULL;
+    while (1) {
+        printf("To exit, press 0\n");
+        printf("To create linked list, press 1\n");
+        printf("To convert linked list to array, press 2\n");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 0:
+                freeList(linkedList);
+                exit(0);
+            case 1: {
+                int n;
+                printf("Please enter the size of the array: ");
+                scanf("%d", &n);
+                int T[N];
+                for (int i=0;i<n;i++) {
+                    printf("Please enter element %d: ",i+1);
+                    scanf("%d", &T[i]);
+                }
+                linkedList = toList(T,n);
+                break;
+            }
+            case 2: {
+                int count;
+                int* array=toArray(linkedList,&count);
+                if (array!=NULL) {
+                    printf("Array elements: ");
+                    for (int i=0;i<count;i++) {
+                        printf("%d ", array[i]);
+                    }
+                    printf("\n");
+                    free(array);
+                } else {
+                    printf("Conversion to array failed.\n");
+                }
+                break;
+            }
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
